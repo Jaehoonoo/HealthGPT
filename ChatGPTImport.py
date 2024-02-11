@@ -22,7 +22,8 @@ def get_meal_plan(bmi, maintenance_calories, ideal_BMI, food_preferences):#funct
         {
             "role": "user",
             "content": f"BMI: {bmi}, Maintenance Calories: {maintenance_calories} calories per day, Weight Loss Goal: {ideal_BMI} pounds, Food Preferences/Dietary Restrictions: {food_preferences}. please say the estimated calories per meal and calories per day.Make sure to let the user know that they cam ask for changes to the plan if needed"
-        }#gives the data to the model for better personalization
+        }
+        #gives the data to the model for better personalization
     ]
 
     response = client.chat.completions.create( 
@@ -36,6 +37,30 @@ def get_meal_plan(bmi, maintenance_calories, ideal_BMI, food_preferences):#funct
     )
 
     return response.choices[0].message.content #returns the output of the api call to the meal_plan function
+'''
+def extract_response(bmi, maintenance_calories, ideal_BMI, food_preferences):
+    meal_plan = get_meal_plan(bmi, maintenance_calories, ideal_BMI, food_preferences)
+    messages = [ #messages that the api will be prompted to provide better personalization
+        {
+            "role": "system",
+            "content": "Extract data classes (day, meal, meal name, calories) into a simple Pandas DataFrame object from the following information."
+        },
+        {
+            "role": "user",
+            "content": f"{meal_plan}, output the data set as just the simple pandas dataframe object. Also use curly brackets instead of square brackets to contain the data set."
+        } # help personalize output
+    ]
+
+    response = client.chat.completions.create( 
+      model="gpt-3.5-turbo",  # model being used 
+      messages=messages,
+      temperature=0.7,
+      max_tokens=2000,
+      top_p=1.0,
+      frequency_penalty=0.5,
+      presence_penalty=0.0
+    )
+    return response.choices[0].message.content
 
 
 
@@ -54,4 +79,4 @@ def main():#will delete just temporary
 
 if __name__ == "__main__":
     main()
-
+'''

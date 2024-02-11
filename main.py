@@ -72,6 +72,7 @@ bmi_data = pd.DataFrame(
     }
 )
 
+
 def bmi_calculation(feet, inches, weight):
         # calculates BMI
         bmi = (weight / 2.205) / ((((feet * 12) + inches) * .0254)**2)
@@ -113,11 +114,14 @@ age = 18
 ideal_bmi = 20
 food_preferences = ''
 
+
 #calls functions locally so that it updates
 bmi = bmi_calculation(feet, inches, weight)
 bmr = bmr_calculation(feet, inches, weight, age, sex)
 cal = calorie_calculation(feet, inches, weight, age, sex, activity)
 meal = get_meal_plan(bmi, cal, ideal_bmi, food_preferences)
+
+
 
 # initializes navbar and title
 # Add a navbar to switch from one page to the other
@@ -166,7 +170,7 @@ calorie_page = Markdown("""
 meal_plan_page =Markdown("""
 <|{ideal_bmi}|input|label=IdealBMI|>
 <|{food_preferences}|input|label=Preferences/Restrictions|>     
-<|New Meal Plan|button|on_action=get_meal_plan|>        
+<|New Meal Plan|button|on_action=get_meal_plan|>       
 <|{get_meal_plan(bmi, cal, ideal_bmi, food_preferences)}|>
 """)
 
