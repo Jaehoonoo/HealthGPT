@@ -61,7 +61,7 @@ def extract_response(bmi, maintenance_calories, ideal_BMI, food_preferences):
       presence_penalty=0.0
     )
     return response.choices[0].message.content
-
+'''
 
 
 
@@ -79,4 +79,4 @@ def main():#will delete just temporary
 
 if __name__ == "__main__":
     main()
-'''
+
