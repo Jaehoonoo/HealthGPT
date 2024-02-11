@@ -1,0 +1,6 @@
+taipy
+openai
+python-dotenv
+os
+json
+random
