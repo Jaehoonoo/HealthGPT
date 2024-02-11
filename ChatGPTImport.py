@@ -29,7 +29,7 @@ def get_meal_plan(bmi, maintenance_calories, ideal_BMI, food_preferences):#funct
       model="gpt-3.5-turbo",  # model being used 
       messages=messages,
       temperature=0.7,
-      max_tokens=1000,
+      max_tokens=2000,
       top_p=1.0,
       frequency_penalty=0.5,
       presence_penalty=0.0
