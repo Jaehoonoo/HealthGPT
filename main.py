@@ -1,11 +1,13 @@
 from taipy import Gui
 from taipy.gui import Markdown
+import pandas as pd
 
-bmi_data = {
-  "Categories": ["Healthy","Underweight","Overweight", "Obesity"],
-  "Ranges": [(18.5, 24.9), (0, 18.4), (25.0, 29.9), (30, float('inf'))]
-}
-
+bmi_data = pd.DataFrame(
+    {
+    "Categories": ["Underweight","Healthy", "Overweight", "Obesity"],
+    "Ranges": [(0), (18.5), (29.9), (40)]
+    }
+)
 
 def bmi_calculation(feet, inches, weight):
         # calculates BMI
@@ -38,13 +40,13 @@ def calorie_calculation(feet, inches, weight, age, sex, activity):
       
 
 #presets to allow program to run
-activity = ''
-sex =''
+activity = 'Little or no exercise'
+sex ='Male'
 cal = 0
 weight = 160
 feet = 5
 inches = 9
-age = 0
+age = 18
 
 #calls functions locally so that it updates
 bmi = bmi_calculation(feet, inches, weight)
@@ -81,14 +83,21 @@ home_page = Markdown("""## Achieve your fitness goals.
 #markdown allows function call; function call allows updates based on user input
 bmi_page = Markdown("""
 <|{bmi_calculation(feet, inches, weight)}|number|active=False|>
-<|{bmi_data}|chart|type=bar|values=BMI|labels=Range|>
+<|{bmi_data}|chart|type=line|values=Ranges|labels=Categories|> # data chart of BMI ranges
 """)
 
 calorie_page = Markdown("""
-#####Maintenance: <|{calorie_calculation(feet, inches, weight, age, sex, activity)}|> cal/day
-#####Mild weight loss (0.5 lbs/week): <|{calorie_calculation(feet, inches, weight, age, sex, activity)-250}|> cal/day
-#####Weight loss (1 lb/week): <|{calorie_calculation(feet, inches, weight, age, sex, activity)-500}|> cal/day
-#####Extreme weight loss (2 lbs/week): <|{calorie_calculation(feet, inches, weight, age, sex, activity)-1000}|> cal/day
+####Maintenance: 
+<|{calorie_calculation(feet, inches, weight, age, sex, activity)}|> cal/day
+                        
+####Mild weight loss (0.5 lbs/week):
+<|{calorie_calculation(feet, inches, weight, age, sex, activity)-250}|> cal/day
+
+####Weight loss (1 lb/week):
+<|{calorie_calculation(feet, inches, weight, age, sex, activity)-500}|> cal/day
+                        
+####Extreme weight loss (2 lbs/week): 
+<|{calorie_calculation(feet, inches, weight, age, sex, activity)-1000}|> cal/day
 """)
 
 meal_plan_page = """
