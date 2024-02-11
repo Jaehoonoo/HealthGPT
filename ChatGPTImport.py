@@ -37,17 +37,17 @@ def get_meal_plan(bmi, maintenance_calories, ideal_BMI, food_preferences):#funct
     )
 
     return response.choices[0].message.content #returns the output of the api call to the meal_plan function
-'''
+
 def extract_response(bmi, maintenance_calories, ideal_BMI, food_preferences):
     meal_plan = get_meal_plan(bmi, maintenance_calories, ideal_BMI, food_preferences)
     messages = [ #messages that the api will be prompted to provide better personalization
         {
             "role": "system",
-            "content": "Extract data classes (day, meal, meal name, calories) into a simple Pandas DataFrame object from the following information."
+            "content": f"Extract data classes (meal, name, calories) into a simple Pandas DataFrame object from {meal_plan}."
         },
         {
             "role": "user",
-            "content": f"{meal_plan}, output the data set as just the simple pandas dataframe object. Also use curly brackets instead of square brackets to contain the data set."
+            "content": "Output only the data variable"
         } # help personalize output
     ]
 
@@ -61,7 +61,7 @@ def extract_response(bmi, maintenance_calories, ideal_BMI, food_preferences):
       presence_penalty=0.0
     )
     return response.choices[0].message.content
-'''
+
 
 
 

@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import pandas as pd
-from ChatGPTImport import get_meal_plan
+from ChatGPTImport import get_meal_plan, extract_response
 
 
 load_dotenv()
@@ -123,6 +123,7 @@ meal = get_meal_plan(bmi, cal, ideal_bmi, food_preferences)
 
 
 
+
 # initializes navbar and title
 # Add a navbar to switch from one page to the other
 main = Markdown("""
@@ -170,7 +171,7 @@ calorie_page = Markdown("""
 meal_plan_page =Markdown("""
 <|{ideal_bmi}|input|label=IdealBMI|>
 <|{food_preferences}|input|label=Preferences/Restrictions|>     
-<|New Meal Plan|button|on_action=get_meal_plan|>       
+<|New Meal Plan|button|on_action=get_meal_plan|>
 <|{get_meal_plan(bmi, cal, ideal_bmi, food_preferences)}|>
 """)
 
