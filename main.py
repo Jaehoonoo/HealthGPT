@@ -1,6 +1,68 @@
 from taipy import Gui
-from taipy.gui import Markdown
+from taipy.gui import Markdown, State, notify
+import os
+from dotenv import load_dotenv
+from openai import OpenAI
 import pandas as pd
+
+
+load_dotenv()
+
+client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
+
+#chatbot
+context = "The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\nHuman: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today? "
+conversation = {
+    "Conversation": ["Hi! I am NutriBot. How can I help you today?"]
+}
+current_user_message = ""
+
+#chatbot request message
+def request(state: State, prompt: str) -> str:
+    """
+    Send a prompt to the GPT-3 API and return the response.
+
+    Args:
+        - state: The current state.
+        - prompt: The prompt to send to the API.
+
+    Returns:
+        The response from the API.
+    """
+    response = state.client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": f"{prompt}",
+            }
+        ],
+        model="gpt-3.5-turbo",
+    )
+    return response.choices[0].message.content
+
+# send message to chatbot
+def send_message(state: State) -> None:
+    """
+    Send the user's message to the API and update the conversation.
+
+    Args:
+        - state: The current state.
+    """
+    # Add the user's message to the context
+    state.context += f"Human: \n {state.current_user_message}\n\n AI:"
+    # Send the user's message to the API and get the response
+    answer = request(state, state.context).replace("\n", "")
+    # Add the response to the context for future messages
+    state.context += answer
+    # Update the conversation
+    conv = state.conversation._dict.copy()
+    conv["Conversation"] += [state.current_user_message, answer]
+    state.conversation = conv
+    # Clear the input field
+    state.current_user_message = ""
+
+
+
 
 bmi_data = pd.DataFrame(
     {
@@ -83,7 +145,7 @@ home_page = Markdown("""## Achieve your fitness goals.
 #markdown allows function call; function call allows updates based on user input
 bmi_page = Markdown("""
 <|{bmi_calculation(feet, inches, weight)}|number|active=False|>
-<|{bmi_data}|chart|type=line|values=Ranges|labels=Categories|> # data chart of BMI ranges
+<|{bmi_data}|chart|type=line|values=Ranges|labels=Categories|>
 """)
 
 calorie_page = Markdown("""
@@ -103,13 +165,21 @@ calorie_page = Markdown("""
 meal_plan_page = """
 #meals
 """
+
+chatbot_page = """
+<|{conversation}|table|show_all|width=100%|>
+<|{current_user_message}|input|label=Write your message here...|on_action=send_message|class_name=fullwidth|>
+"""
+
 # pages to navigate through navbar
 pages = {
     "/": main,
     "Home": home_page,
     "BMI": bmi_page,
     "Calorie": calorie_page,
-    "MealPlan": meal_plan_page
+    "MealPlan": meal_plan_page,
+    "ChatBot": chatbot_page
 }
+
 #Gui is the graphical user interface that is interactive, runs on local port
 Gui(pages=pages).run(use_reloader=True, port=5001)
