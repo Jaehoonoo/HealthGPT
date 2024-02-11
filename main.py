@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from openai import OpenAI
 import pandas as pd
+from ChatGPTImport import get_meal_plan
 
 
 load_dotenv()
@@ -98,7 +99,7 @@ def calorie_calculation(feet, inches, weight, age, sex, activity):
         return round(bmr_calculation(feet, inches, weight, age, sex) * 1.725)
     elif activity == "Very intense exercise or 2x training":
         return round(bmr_calculation(feet, inches, weight, age, sex) * 1.9)
-    
+ 
       
 
 #presets to allow program to run
@@ -109,14 +110,14 @@ weight = 160
 feet = 5
 inches = 9
 age = 18
+ideal_bmi = 20
+food_preferences = ''
 
 #calls functions locally so that it updates
 bmi = bmi_calculation(feet, inches, weight)
 bmr = bmr_calculation(feet, inches, weight, age, sex)
 cal = calorie_calculation(feet, inches, weight, age, sex, activity)
-#half_pound_loss = cal - 250
-#pound_loss = calorie_calculation(feet, inches, weight, age, sex, activity) - 500   
-#two_pound_loss = calorie_calculation(feet, inches, weight, age, sex, activity) - 1000
+meal = get_meal_plan(bmi, cal, ideal_bmi, food_preferences)
 
 # initializes navbar and title
 # Add a navbar to switch from one page to the other
@@ -162,9 +163,12 @@ calorie_page = Markdown("""
 <|{calorie_calculation(feet, inches, weight, age, sex, activity)-1000}|> cal/day
 """)
 
-meal_plan_page = """
-#meals
-"""
+meal_plan_page =Markdown("""
+<|{ideal_bmi}|input|label=IdealBMI|>
+<|{food_preferences}|input|label=Preferences/Restrictions|>     
+<|New Meal Plan|button|on_action=get_meal_plan|>        
+<|{get_meal_plan(bmi, cal, ideal_bmi, food_preferences)}|>
+""")
 
 chatbot_page = """
 <|{conversation}|table|show_all|width=100%|>
