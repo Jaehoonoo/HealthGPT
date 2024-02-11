@@ -14,17 +14,15 @@ Navigate to the app directory:
 cd HealthGPT
 Install the necessary dependencies:
 
-Install python:
-pip3 install python
+run this command: pip3 install -r requirements.txt
 
-Install Taipy:
-pip3 install taipy
 
 Install OpenAI and Get API Key:
 pip3 install openai
 Sign up for a openai account.
 Create a new key.
 add the key to the .env file.
+Warning: never push your .env file to a public directory
 GPT_KEY = your_key
 Start the app:
 
